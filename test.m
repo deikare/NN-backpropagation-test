@@ -1,7 +1,7 @@
 clear;
 close all
 
-K1 = 5;
+K1 = 2;
 K2 = 1;
 
 S = 2;

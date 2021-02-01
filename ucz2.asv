@@ -47,7 +47,7 @@ function [W1po , W2po, iteracjeUczenia] = ucz2(W1przed , W2przed , P , T , n, m,
         iteracjeUczenia(i).blad_srKw1DlaUczacych = blad_srKw1;
         iteracjeUczenia(i).blad_srKw2DlaUczacych = blad_srKw2;
         
-        [bladCalkowityWarstwa1, bladCalkowityWarstwa2] = bledyCalkowite(W1, W2, P, T, fprim);
+        [bladCalkowityWarstwa1, bladCalkowityWarstwa2] = bledyCalkowite(W1, W2, P, T);
         iteracjeUczenia(i).bladCalkowityWarstwa1 = bladCalkowityWarstwa1;
         iteracjeUczenia(i).bladCalkowityWarstwa2 = bladCalkowityWarstwa2;
         
@@ -74,49 +74,39 @@ end
 function fig = plotter(iteracjeUczenia)
     fig = figure;
     
-    bledy1dlaUczacych = [iteracjeUczenia.blad_srKw1DlaUczacych];
-    bledy2dlaUczacych = [iteracjeUczenia.blad_srKw2DlaUczacych];
-    
-    bledy1dlaWszystkich = [iteracjeUczenia.bladCalkowityWarstwa1];
-    bledy2dlaWszystkich = [iteracjeUczenia.bladCalkowityWarstwa2];
+    bledy1 = [iteracjeUczenia.blad_srKw1DlaUczacych];
+    bledy2 = [iteracjeUczenia.blad_srKw2DlaUczacych];
     
     tiledlayout(3, 1);
     
     nexttile;
-    plot(bledy1dlaUczacych);
-    hold on
-    plot(bledy1dlaWszystkich);
+    plot(bledy1);
     title('blad 1');
-    hold off
     
     nexttile;
-    plot(bledy2dlaUczacych);
-    hold on
-    plot(bledy2dlaWszystkich);
+    plot(bledy2);
     title('blad 2');
-    hold off
 end
 
-function [bladCalkowityWarstwa1, bladCalkowityWarstwa2] = bledyCalkowite(W1, W2, P, T, fprim)
-    [~, liczbaDanych] = size(P);
+function [bladCalkowityWarstwa1, bladCalkowityWarstwa2] = bledyCalkowite(W1, W2, P, T)
+    [dlugoscDanych, liczbaDanych] = size(P);
     
     bladCalkowityWarstwa1 = 0;
     bladCalkowityWarstwa2 = 0;
     
     for numerDanej = 1 : liczbaDanych
-        X = P(:, numerDanej);        
-        [Y1, Y2] = dzialaj2(W1, W2, X);
-        Y2_wzorcowe = T(:, numerDanej);
+        X = P(:, numerDanej);
         
-        D2 = Y2_wzorcowe - Y2;
+        X1 = [-1; X];
+        
+        [Y1, Y2] = dzialaj2(W1, W2, X);
+        X2 = [-1; Y1];
+        
+         D2 = Y2_wzorcowe - Y2;
         E2 = fprim(Y2) .* D2;
         
         D1 = W2(:, 2 : end)' * E2;
         E1 = fprim(Y1) .* D1;
-        
-        bladCalkowityWarstwa2 = bladCalkowityWarstwa2 + bladsredniokw(D2);
-        bladCalkowityWarstwa1 = bladCalkowityWarstwa1 + bladsredniokw(D1);
-    end
 end
 
 %%TODO - dodać błędy dla każdej danej uczącej w obliczeniach, ja prdl xD i
