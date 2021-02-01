@@ -2,7 +2,7 @@ clear;
 close all
 
 K1 = 2;
-K2 = 1;
+K2 = 2;
 
 S = 2;
 

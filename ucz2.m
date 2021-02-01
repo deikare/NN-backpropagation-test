@@ -22,15 +22,16 @@ function [W1po , W2po, iteracjeUczenia] = ucz2(W1przed , W2przed , P , T , n, m,
         X2 = [-1; Y1];
         
         D2 = Y2_wzorcowe - Y2;
-        E2 = fprim(Y2) .* D2;
+        E2 = beta * D2 .* Y2 .* (1 - Y2);
+        D1 = W2(2 : end, :) * E2;
+        E1 = beta * D1 .* Y1 .* (1 - Y1);
         
-        D1 = W2(:, 2 : end)' * E2;
-        E1 = fprim(Y1) .* D1;
         
-        dW2 = wspUcz * E2 * X2';
+        
+        dW2 = wspUcz * X2 * E2';
         W2 = W2 + dW2;
         
-        dW1 = wspUcz * E1 * X1';
+        dW1 = wspUcz * X1 * E1';
         W1 = W1 + dW1;
         
         blad_srKw2 = bladsredniokw(D2);
@@ -47,7 +48,7 @@ function [W1po , W2po, iteracjeUczenia] = ucz2(W1przed , W2przed , P , T , n, m,
         iteracjeUczenia(i).blad_srKw1DlaUczacych = blad_srKw1;
         iteracjeUczenia(i).blad_srKw2DlaUczacych = blad_srKw2;
         
-        [bladCalkowityWarstwa1, bladCalkowityWarstwa2] = bledyCalkowite(W1, W2, P, T, fprim);
+        [bladCalkowityWarstwa1, bladCalkowityWarstwa2] = bledyCalkowite(W1, W2, P, T);
         iteracjeUczenia(i).bladCalkowityWarstwa1 = bladCalkowityWarstwa1;
         iteracjeUczenia(i).bladCalkowityWarstwa2 = bladCalkowityWarstwa2;
         
@@ -97,22 +98,25 @@ function fig = plotter(iteracjeUczenia)
     hold off
 end
 
-function [bladCalkowityWarstwa1, bladCalkowityWarstwa2] = bledyCalkowite(W1, W2, P, T, fprim)
+function [bladCalkowityWarstwa1, bladCalkowityWarstwa2] = bledyCalkowite(W1, W2, P, T)
     [~, liczbaDanych] = size(P);
+    beta = 5;
     
     bladCalkowityWarstwa1 = 0;
     bladCalkowityWarstwa2 = 0;
     
     for numerDanej = 1 : liczbaDanych
-        X = P(:, numerDanej);        
-        [Y1, Y2] = dzialaj2(W1, W2, X);
+        X = P(:, numerDanej);
+        X1 = [-1; X];
         Y2_wzorcowe = T(:, numerDanej);
         
-        D2 = Y2_wzorcowe - Y2;
-        E2 = fprim(Y2) .* D2;
+        [Y1, Y2] = dzialaj2(W1, W2, X);
+        X2 = [-1; Y1];
         
-        D1 = W2(:, 2 : end)' * E2;
-        E1 = fprim(Y1) .* D1;
+        D2 = Y2_wzorcowe - Y2;
+        E2 = beta * D2 .* Y2 .* (1 - Y2);
+        D1 = W2(2 : end, :) * E2;
+        E1 = beta * D1 .* Y1 .* (1 - Y1);
         
         bladCalkowityWarstwa2 = bladCalkowityWarstwa2 + bladsredniokw(D2);
         bladCalkowityWarstwa1 = bladCalkowityWarstwa1 + bladsredniokw(D1);
