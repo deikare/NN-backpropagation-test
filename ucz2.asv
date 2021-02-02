@@ -103,6 +103,8 @@ function [wspUczAktualny, wspUczPoprzedni, error_n_mniej_1] = zaktualizujWspUcze
 end
 
 function fig = plotter(iteracjeUczenia)
+    fig = figure;
+    
     bledy1dlaUczacych = [iteracjeUczenia.blad_srKw1DlaUczacych];
     bledy2dlaUczacych = [iteracjeUczenia.blad_srKw2DlaUczacych];
     
@@ -111,34 +113,35 @@ function fig = plotter(iteracjeUczenia)
     
     procentyZleSklasyfikowanych = [iteracjeUczenia.procentZleSklasyfikowanych];
     
-    fig = figure;
-    tiledlayout(3, 1);
+    wspolczynnikiUczenia = [iteracjeUczenia.wspUcz];
+    
+    Y2 = [iteracjeUczenia.Y2];
+    
+    tiledlayout(5, 1);
     
     nexttile;
     plot(bledy1dlaUczacych);
     hold on
     plot(bledy1dlaWszystkich);
-    title('bład 1szej warstwy');
-    legend('Dla danych uczących', 'Dla wszystkich danych');
-    xlabel('numer iteracji');
-    ylabel('wartość błędu');
+    title('blad 1szej warsty');
+    legend('Dla danych uczących', 'Dlaw 
     hold off
     
     nexttile;
     plot(bledy2dlaUczacych);
     hold on
     plot(bledy2dlaWszystkich);
-    title('bład 2giej warstwy');
-    legend('Dla danych uczących', 'Dla wszystkich danych');
-    xlabel('numer iteracji');
-    ylabel('wartość błędu');
+    title('blad 2');
     hold off
     
     nexttile;
     plot(procentyZleSklasyfikowanych);
-    title('Procent danych źle skasyfikowanych');
-    xlabel('numer iteracji');
-    ylabel('procent [%]');
+    
+    nexttile;
+    plot(wspolczynnikiUczenia);
+    
+    nexttile;
+    plot(Y2);
 end
 
 function [bladCalkowityWarstwa1, bladCalkowityWarstwa2] = bledyCalkowiteWIteracji(W1, W2, P, T)
@@ -167,7 +170,7 @@ function [bladCalkowityWarstwa1, bladCalkowityWarstwa2] = bledyCalkowiteWIteracj
 end
 
 function procent = procentZleSklasyfikowanych(W1, W2, P, T, e)
-    [~, liczbaDanych] = size(T);
+    [dlugoscWyniku, liczbaDanych] = size(T);
     licznikZleSklasyfikowanych = 0;
     
     for numerDanej = 1 : liczbaDanych
@@ -176,9 +179,20 @@ function procent = procentZleSklasyfikowanych(W1, W2, P, T, e)
         
         [~, Y2] = dzialaj2(W1, W2, X);
         
+        czyPoprawnieSklasyfikowanoWszystkie = true;
+        for numerWyjscia = 1 : dlugoscWyniku
+            if Y2(numerWyjscia) ~= Y2_wzorcowe(numerWyjscia)
+                czyPoprawnieSklasyfikowanoWszystkie = false;
+                break
+            end
+        end
+        
         if abs(Y2 - Y2_wzorcowe) >= e
             licznikZleSklasyfikowanych = licznikZleSklasyfikowanych + 1;
         end
+%         if czyPoprawnieSklasyfikowanoWszystkie == false
+%             licznikZleSklasyfikowanych = licznikZleSklasyfikowanych + 1;
+%         end
     end
     
     procent = 100 * licznikZleSklasyfikowanych / liczbaDanych;
