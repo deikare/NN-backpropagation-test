@@ -29,7 +29,7 @@ for numerDanej = 1 : liczbaDanych
 end
 Yprzed
 
-[W1po, W2po, ~, ~] = ucz2(W1, W2, P, T, n, m, eps)
+[W1po, W2po, ~, ~] = ucz2(W1przed, W2przed, P, T, n, m, eps)
 Ypo = [];
 for numerDanej = 1 : liczbaDanych
     [~, y2] = dzialaj2(W1po, W2po, P(:, numerDanej));
