@@ -21,7 +21,7 @@ eps = 0;
 
 %% testy z przykladu z zajec
 [W1przed, W2przed] = init2(2, 2, 1)
-[~, liczbaDanych] = size(P)
+[~, liczbaDanych] = size(P);
 Yprzed = [];
 for numerDanej = 1 : liczbaDanych
     [~, y2] = dzialaj2(W1przed, W2przed, P(:, numerDanej));
