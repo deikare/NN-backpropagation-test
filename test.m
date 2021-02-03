@@ -1,5 +1,6 @@
 clear;
 close all
+clc
 
 S = 2;
 K1 = 2;

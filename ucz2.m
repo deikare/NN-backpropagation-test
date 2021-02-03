@@ -31,7 +31,7 @@ function [W1po , W2po, iteracjeUczenia, fig] = ucz2(W1przed , W2przed , P , T , 
         
         D2 = Y2_wzorcowe - Y2;
         E2 = beta * D2 .* Y2 .* (1 - Y2);
-        D1 = W2(2 : end, :) * E2;
+        D1 = W2(2 : end, :) * E2; %%propagujemy błąd wstecz z pominięciem -1
         E1 = beta * D1 .* Y1 .* (1 - Y1);
         
         dW2biezace = X2 * E2';
@@ -105,7 +105,7 @@ function fig = plotter(iteracjeUczenia)
     plot(bledy1dlaUczacych);
     hold on
     plot(bledy1dlaWszystkich);
-    title('bład 1szej warstwy');
+    title('błąd 1szej warstwy');
     legend('Dla danych uczących', 'Dla wszystkich danych');
     xlabel('numer iteracji');
     ylabel('wartość błędu');
@@ -115,7 +115,7 @@ function fig = plotter(iteracjeUczenia)
     plot(bledy2dlaUczacych);
     hold on
     plot(bledy2dlaWszystkich);
-    title('bład 2giej warstwy');
+    title('błąd 2giej warstwy');
     legend('Dla danych uczących', 'Dla wszystkich danych');
     xlabel('numer iteracji');
     ylabel('wartość błędu');
